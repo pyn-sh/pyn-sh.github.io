@@ -31,7 +31,7 @@ Manrope Variable, self-hosted. Headings 800 with tracking between -0.025em and -
 One authored moment: check report rows slide in like the logo's speed lines. Disabled under reduced motion.
 
 ## Logo
-On dark grounds the logo sits on a white tile, because its indigo letter loses contrast otherwise.
+The logo always sits directly on the page with a transparent background, in light and dark (project owner's choice). Never put it on a tile. The apple touch icon is the one exception: it keeps an opaque white background for phone home screens.
 
 ## Voice
 Planned behavior is always labelled as planned. No performance claims, testimonials or install instructions.
