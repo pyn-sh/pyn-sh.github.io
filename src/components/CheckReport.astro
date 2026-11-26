@@ -1,0 +1,146 @@
+---
+import { CircleCheck, CircleDashed, CircleSlash, CircleX } from '@lucide/astro';
+
+// Statuses and exit codes follow docs/specifications/output-and-exit-codes.md.
+type Status = 'passed' | 'failed' | 'unavailable' | 'skipped';
+interface Scenario {
+	id: string;
+	label: string;
+	command: string;
+	rows: [name: string, status: Status, note: string][];
+	exit: number;
+	verdict: string;
+}
+const scenarios: Scenario[] = [
+	{
+		id: 'clean',
+		label: 'All pass',
+		command: 'pyn check',
+		rows: [
+			['format', 'passed', 'nothing to change'],
+			['lint', 'passed', 'no findings'],
+			['types', 'passed', 'no findings'],
+		],
+		exit: 0,
+		verdict: 'Every selected check ran and passed.',
+	},
+	{
+		id: 'lint',
+		label: 'Lint finding',
+		command: 'pyn check',
+		rows: [
+			['format', 'passed', 'nothing to change'],
+			['lint', 'failed', 'findings, shown unedited'],
+			['types', 'passed', 'no findings'],
+		],
+		exit: 1,
+		verdict: 'The other checks still run to completion.',
+	},
+	{
+		id: 'missing',
+		label: 'Tool missing',
+		command: 'pyn check',
+		rows: [
+			['format', 'passed', 'nothing to change'],
+			['lint', 'passed', 'no findings'],
+			['types', 'unavailable', 'type checker not found'],
+		],
+		exit: 3,
+		verdict: 'A broken setup is not a pass, and not a code failure.',
+	},
+	{
+		id: 'empty',
+		label: 'No tests',
+		command: 'pyn check lint tests',
+		rows: [
+			['lint', 'passed', 'no findings'],
+			['tests', 'skipped', 'no tests collected'],
+		],
+		exit: 1,
+		verdict: 'You asked for tests, so zero tests does not count.',
+	},
+];
+const look = {
+	passed: { icon: CircleCheck, tone: 'bg-teal-300 text-indigo-950' },
+	failed: { icon: CircleX, tone: 'bg-[#ffb4b8] text-[#4a0610]' },
+	unavailable: { icon: CircleSlash, tone: 'bg-[#ffd68a] text-[#3f2700]' },
+	skipped: { icon: CircleDashed, tone: 'bg-indigo-200 text-indigo-950' },
+};
+---
+
+<figure class="report rounded-3xl bg-panel p-5 text-white shadow-[0_24px_60px_-24px_rgb(13_9_66/0.55)] sm:p-7">
+	<fieldset>
+		<legend class="text-sm font-semibold text-indigo-200">Choose a situation</legend>
+		<div class="mt-3 flex flex-wrap gap-2">
+			{scenarios.map((s, i) => (
+				<label class="cursor-pointer rounded-full border border-white/25 px-4 py-2 text-sm font-semibold transition-colors hover:border-teal-300 has-checked:border-white has-checked:bg-white has-checked:text-indigo-950 has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-teal-300">
+					<input type="radio" name="scenario" value={s.id} checked={i === 0} class="sr-only" />
+					{s.label}
+				</label>
+			))}
+		</div>
+	</fieldset>
+
+	<div aria-live="polite">
+		{scenarios.map((s) => (
+			<div class="panel mt-6 hidden" data-scenario={s.id}>
+				<p class="font-mono text-sm break-words text-teal-300"><span aria-hidden="true">$ </span>{s.command}</p>
+				<ul class="mt-4 grid gap-2.5">
+					{s.rows.map(([name, status, note], i) => {
+						const { icon: Mark, tone } = look[status];
+						return (
+							<li class="bar grid grid-cols-[auto_1fr_auto] items-center gap-x-3 rounded-2xl bg-white/8 py-3 pr-3 pl-4" style={`--i:${i}`}>
+								<span class="w-14 font-bold">{name}</span>
+								<span class="text-sm text-indigo-200">{note}</span>
+								<span class:list={['inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold', tone]}>
+									<Mark class="size-4" aria-hidden="true" /> {status}
+								</span>
+							</li>
+						);
+					})}
+					{s.rows.length < 3 && <li class="py-3 max-sm:hidden" aria-hidden="true">&nbsp;</li>}
+				</ul>
+				<div class="mt-5 flex items-center gap-4 border-t border-white/15 pt-5">
+					<p class="text-4xl font-extrabold whitespace-nowrap tabular-nums">
+						<span class="mr-2 text-sm font-semibold text-indigo-200">exit code</span>{s.exit}
+					</p>
+					<p class="text-sm leading-snug text-indigo-200">{s.verdict}</p>
+				</div>
+			</div>
+		))}
+	</div>
+	<figcaption class="mt-5 text-xs text-indigo-200">Planned behavior from the draft specification. Pyn is not built yet.</figcaption>
+</figure>
+
+<style is:global>
+	.report:has(input[value='clean']:checked) [data-scenario='clean'],
+	.report:has(input[value='lint']:checked) [data-scenario='lint'],
+	.report:has(input[value='missing']:checked) [data-scenario='missing'],
+	.report:has(input[value='empty']:checked) [data-scenario='empty'] {
+		display: block;
+	}
+	/* Rows arrive like the speed lines in the logo. */
+	.report .bar {
+		animation: arrive 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+		animation-delay: calc(var(--i) * 90ms);
+	}
+	@keyframes arrive {
+		from {
+			transform: translateX(-2.5rem);
+			opacity: 0.25;
+		}
+	}
+	@media (max-width: 30rem) {
+		.report .bar {
+			grid-template-columns: 1fr auto;
+		}
+		.report .bar > :nth-child(2) {
+			grid-row: 2;
+			grid-column: 1 / -1;
+		}
+		.report .bar > :nth-child(3) {
+			grid-row: 1;
+			grid-column: 2;
+		}
+	}
+</style>

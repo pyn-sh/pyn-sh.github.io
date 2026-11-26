@@ -1,0 +1,209 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+/* Colors are sampled from the logo: deep indigo, bright teal, white. */
+@theme {
+	--font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+	--color-indigo-950: #0d0942;
+	--color-indigo-900: #140c63;
+	--color-indigo-800: #1c118a;
+	--color-indigo-700: #2b1fb0;
+	--color-indigo-200: #c9c6f2;
+	--color-indigo-100: #e6e5fa;
+	--color-teal-300: #1be6d6;
+	--color-teal-500: #04d0b8;
+	--color-teal-800: #056458;
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+	color-scheme: light dark;
+	--ground: #f5f6fd;
+	--surface: #ffffff;
+	--ink: #14123a;
+	--muted: #4b4a6b;
+	--line: #dcdcf0;
+	--heading: #140c63;
+	--link: #2b1fb0;
+	--panel: #140c63;
+	--field: #1c118a;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--ground: #09071f;
+		--surface: #121036;
+		--ink: #e7e6f7;
+		--muted: #b3b1d4;
+		--line: #2c2961;
+		--heading: #ffffff;
+		--link: #5ff0e3;
+		--panel: #171150;
+		--field: #140c63;
+	}
+}
+@theme inline {
+	--color-ground: var(--ground);
+	--color-surface: var(--surface);
+	--color-ink: var(--ink);
+	--color-muted: var(--muted);
+	--color-line: var(--line);
+	--color-heading: var(--heading);
+	--color-link: var(--link);
+	--color-panel: var(--panel);
+	--color-field: var(--field);
+}
+
+@layer base {
+	html {
+		scroll-behavior: smooth;
+		scrollbar-color: var(--color-indigo-700) var(--ground);
+		-webkit-text-size-adjust: 100%;
+	}
+	body {
+		background: var(--ground);
+		color: var(--ink);
+		font-family: var(--font-sans);
+		caret-color: var(--color-teal-500);
+	}
+	h1,
+	h2,
+	h3 {
+		text-wrap: balance;
+	}
+	p {
+		text-wrap: pretty;
+	}
+	a {
+		text-underline-offset: 0.2em;
+	}
+	::selection {
+		background: var(--color-teal-300);
+		color: var(--color-indigo-950);
+	}
+	:focus-visible {
+		outline: 3px solid var(--color-teal-500);
+		outline-offset: 3px;
+		border-radius: 4px;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		html {
+			scroll-behavior: auto;
+		}
+		*,
+		*::before,
+		*::after {
+			animation: none !important;
+			transition: none !important;
+		}
+	}
+}
+
+@utility shell {
+	width: 100%;
+	max-width: 76rem;
+	margin-inline: auto;
+	padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+@utility button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	min-height: 3rem;
+	padding-inline: 1.5rem;
+	border-radius: 999px;
+	font-weight: 700;
+	transition:
+		background-color 0.2s var(--ease-out-expo),
+		transform 0.2s var(--ease-out-expo);
+	&:hover {
+		transform: translateY(-1px);
+	}
+}
+
+/* Documents */
+.doc {
+	--tw-prose-body: var(--ink);
+	--tw-prose-headings: var(--heading);
+	--tw-prose-links: var(--link);
+	--tw-prose-bold: var(--heading);
+	--tw-prose-counters: var(--muted);
+	--tw-prose-bullets: var(--color-teal-500);
+	--tw-prose-hr: var(--line);
+	--tw-prose-quotes: var(--ink);
+	--tw-prose-quote-borders: var(--line);
+	--tw-prose-code: var(--heading);
+	--tw-prose-th-borders: var(--line);
+	--tw-prose-td-borders: var(--line);
+	overflow-wrap: break-word;
+}
+.doc h1 {
+	letter-spacing: -0.025em;
+}
+.doc h2,
+.doc h3 {
+	scroll-margin-top: 6rem;
+}
+.doc :not(pre) > code {
+	background: color-mix(in srgb, var(--color-indigo-700) 12%, transparent);
+	border-radius: 0.375rem;
+	padding: 0.1em 0.35em;
+	font-weight: 500;
+}
+.doc :not(pre) > code::before,
+.doc :not(pre) > code::after {
+	content: none;
+}
+.doc pre {
+	border: 1px solid var(--line);
+	border-radius: 0.875rem;
+	font-size: 0.85rem;
+}
+.doc .astro-code {
+	background-color: var(--surface) !important;
+}
+@media (prefers-color-scheme: dark) {
+	.doc .astro-code,
+	.doc .astro-code span {
+		color: var(--shiki-dark) !important;
+		background-color: var(--surface) !important;
+	}
+}
+.table-scroll {
+	overflow-x: auto;
+	margin-block: 1.5em;
+	font-variant-numeric: tabular-nums;
+}
+.table-scroll table {
+	margin: 0;
+	min-width: 100%;
+}
+.table-scroll :is(th, td) {
+	padding: 0.6rem 0.9rem 0.6rem 0;
+	vertical-align: top;
+	min-width: 5rem;
+}
+.doc .contains-task-list {
+	padding-left: 0;
+}
+.doc .task-list-item {
+	list-style: none;
+}
+.doc .task-list-item input {
+	margin-right: 0.6rem;
+	accent-color: var(--color-teal-500);
+}
+.mermaid-figure {
+	overflow-x: auto;
+	margin-block: 1.5em;
+	padding: 1.25rem;
+	background: #fff;
+	border: 1px solid var(--line);
+	border-radius: 0.875rem;
+}
+.mermaid-figure svg {
+	display: block;
+	margin-inline: auto;
+	height: auto;
+}

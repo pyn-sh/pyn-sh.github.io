@@ -1,0 +1,171 @@
+---
+import { ArrowRight, ArrowUpRight, EyeOff, FileLock, ShieldCheck, SquareTerminal } from '@lucide/astro';
+import { Code } from 'astro:components';
+import { Image } from 'astro:assets';
+import logo from '../assets/pyn-logo.png';
+import CheckReport from '../components/CheckReport.astro';
+import TaskGraph from '../components/TaskGraph.astro';
+import Base from '../layouts/Base.astro';
+import { milestones } from '../lib/docs';
+import { REPO_URL } from '../lib/paths.mjs';
+
+const roadmap = await milestones();
+
+const routes = [
+	['pyn run', 'Run a script, file or tool in the project environment', 'Pyn + uv', 'M1–M2'],
+	['pyn add', 'Add dependencies to standard tables', 'uv', 'M2'],
+	['pyn install', 'Sync the environment without removing extra packages', 'uv', 'M2'],
+	['pyn doctor', 'Explain a broken setup without changing it', 'Pyn', 'M2'],
+	['pyn test', 'Run the tests and keep their exit code', 'pytest', 'M3'],
+	['pyn fmt, pyn lint', 'Format and lint with your configuration', 'Ruff', 'M3'],
+	['pyn check', 'One truthful result across every check', 'Pyn + Ruff, ty', 'M3'],
+	['pyn task', 'Run a task graph with parallel steps', 'Pyn', 'M4'],
+];
+
+const promises = [
+	{ icon: FileLock, title: 'Other lock files stay untouched', text: 'In a Poetry or PDM project, Pyn runs inside your environment and never writes the lock file.' },
+	{ icon: EyeOff, title: 'Reading commands run no project code', text: 'Diagnosis, help and dry runs only read. A repository cannot execute anything by being inspected.' },
+	{ icon: SquareTerminal, title: 'No hidden shell', text: 'Commands run as argument lists. Pipes and operators need a shell you name explicitly.' },
+	{ icon: ShieldCheck, title: 'No telemetry', text: 'Nothing is silently transmitted, and secrets are masked in messages Pyn writes.' },
+];
+
+const config = `[tool.pyn.scripts]
+lint = "ruff check ."
+typecheck = "ty check"
+test = "pytest"
+
+[tool.pyn.tasks.ci]
+depends_on = ["lint", "typecheck", "test"]
+parallel = true`;
+---
+
+<Base title="Pyn: one command surface for Python projects" description="Pyn is a planned Rust toolkit that brings uv, Ruff, ty and pytest behind one consistent command line, with a truthful project check and a task graph. In planning, no release yet.">
+	<section class="shell grid items-center gap-12 py-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:py-20">
+		<div>
+			<h1 class="text-[clamp(2.5rem,4.6vw,4.1rem)] leading-[1.06] font-extrabold tracking-[-0.035em] text-heading">
+				One command surface for Python projects.
+			</h1>
+			<p class="mt-7 max-w-[34rem] text-lg leading-relaxed text-muted sm:text-xl">
+				Pyn is a planned toolkit, written in Rust, that puts uv, Ruff, ty and pytest behind one consistent interface, and tells you the truth about what ran.
+			</p>
+			<div class="mt-9 flex flex-wrap gap-3">
+				<a href="/docs/product/executive-summary/" class="button bg-indigo-800 text-white hover:bg-indigo-700 dark:bg-teal-300 dark:text-indigo-950 dark:hover:bg-white">
+					Read the plan <ArrowRight class="size-5" aria-hidden="true" />
+				</a>
+				<a href={REPO_URL} class="button border-2 border-line text-heading hover:bg-surface">
+					View on GitHub <ArrowUpRight class="size-5" aria-hidden="true" />
+				</a>
+			</div>
+			<p class="mt-8 flex items-center gap-3 pl-2 text-sm font-semibold text-muted">
+				<span class="flex flex-col gap-1" aria-hidden="true">
+					<span class="h-1.5 w-7 rounded-full bg-indigo-800 dark:bg-indigo-200"></span>
+					<span class="-ml-2 h-1.5 w-9 rounded-full bg-teal-500"></span>
+					<span class="h-1.5 w-5 rounded-full bg-indigo-800 dark:bg-indigo-200"></span>
+				</span>
+				In planning. There is nothing to install yet.
+			</p>
+		</div>
+		<CheckReport />
+	</section>
+
+	<section class="border-y border-line bg-surface py-20 lg:py-28" aria-labelledby="routes">
+		<div class="shell">
+			<div class="max-w-2xl">
+				<h2 id="routes" class="text-3xl font-extrabold tracking-[-0.025em] text-heading sm:text-5xl">Proven tools do the work. Pyn connects them.</h2>
+				<p class="mt-5 text-lg leading-relaxed text-muted">Resolving, linting, type checking and testing are solved well already. Pyn builds the part between them.</p>
+			</div>
+			<ul class="mt-12 border-t border-line">
+				{routes.map(([command, does, by, milestone]) => (
+					<li class="grid items-baseline gap-x-6 gap-y-2 border-b border-line py-5 md:grid-cols-[13rem_1fr_11rem_4rem]">
+						<code class="font-mono text-base font-bold text-heading">{command}</code>
+						<span class="text-muted">{does}</span>
+						<span>
+							<span class:list={['inline-block rounded-full px-3 py-1 text-sm font-bold', by.startsWith('Pyn') ? 'bg-teal-300 text-indigo-950' : 'bg-indigo-100 text-indigo-900']}>{by}</span>
+						</span>
+						<span class="text-sm font-semibold text-muted tabular-nums md:text-right"><span class="md:sr-only">Planned for </span>{milestone}</span>
+					</li>
+				))}
+			</ul>
+		</div>
+	</section>
+
+	<section class="bg-field py-20 text-white lg:py-28" aria-labelledby="tasks">
+		<div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
+			<div class="min-w-0">
+				<h2 id="tasks" class="text-3xl font-extrabold tracking-[-0.025em] sm:text-5xl">Your CI steps, declared once.</h2>
+				<p class="mt-5 max-w-xl text-lg leading-relaxed text-indigo-200">
+					Name tasks in <code class="font-mono text-base text-teal-300">pyproject.toml</code>. Dependencies run first, each one once, in parallel where you allow it.
+				</p>
+				<div class="mt-8 overflow-hidden rounded-2xl text-sm [&_pre]:overflow-x-auto [&_pre]:p-5 [&_pre]:leading-relaxed">
+					<Code code={config} lang="toml" theme="github-dark" />
+				</div>
+			</div>
+			<div class="flex min-w-0 flex-col justify-center gap-10">
+				<TaskGraph />
+				<p class="text-indigo-200">
+					Planned for milestone M4. Other task runners exist, so the design leans on what Pyn knows about a Python project.
+					<a href="/docs/architecture/task-engine/" class="font-bold text-teal-300 underline">Read the task engine design</a>.
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<section class="shell py-20 lg:py-28" aria-labelledby="safe">
+		<h2 id="safe" class="max-w-3xl text-3xl font-extrabold tracking-[-0.025em] text-heading sm:text-5xl">Designed to be safe on the repository you already have.</h2>
+		<dl class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-2">
+			{promises.map(({ icon: Mark, title, text }) => (
+				<div class="grid grid-cols-[auto_1fr] gap-x-5">
+					<Mark class="row-span-2 size-8 text-teal-800 dark:text-teal-300" stroke-width={1.75} aria-hidden="true" />
+					<dt class="text-xl font-bold text-heading">{title}</dt>
+					<dd class="mt-2 max-w-md leading-relaxed text-muted">{text}</dd>
+				</div>
+			))}
+		</dl>
+		<p class="mt-12 text-muted">These are design requirements, each with a <a class="font-bold text-link underline" href="/docs/security/threat-model/">threat model entry</a> and tests still to be written.</p>
+	</section>
+
+	<section class="border-y border-line bg-surface py-20 lg:py-28" aria-labelledby="roadmap">
+		<div class="shell grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:gap-20">
+			<div class="lg:sticky lg:top-28 lg:self-start">
+				<h2 id="roadmap" class="text-3xl font-extrabold tracking-[-0.025em] text-heading sm:text-5xl">Where it stands</h2>
+				<p class="mt-5 leading-relaxed text-muted">Milestones are ordered by dependency and carry no dates. Three go or no-go gates decide whether work continues.</p>
+				<p class="mt-4 leading-relaxed text-muted">The biggest risk is that uv ships its own task runner or combined check. The plan says <a class="font-bold text-link underline" href="/docs/research/opportunity-analysis/#go--no-go">what happens then</a>.</p>
+				<a href="/docs/roadmap/" class="button mt-8 border-2 border-line text-heading hover:bg-ground">Full roadmap <ArrowRight class="size-5" aria-hidden="true" /></a>
+			</div>
+			<ol class="relative">
+				{roadmap.map((m) => {
+					const active = m.status !== 'Not started';
+					return (
+						<li class="group relative grid grid-cols-[3.5rem_1fr] gap-x-5 pb-8 last:pb-0">
+							<span class="absolute top-9 bottom-0 left-7 w-0.5 -translate-x-1/2 bg-line group-last:hidden" aria-hidden="true"></span>
+							<span class:list={['grid h-9 place-items-center rounded-full text-sm font-extrabold', active ? 'bg-teal-300 text-indigo-950' : 'border-2 border-line text-muted']}>{m.id}</span>
+							<div>
+								<h3 class="text-xl font-bold text-heading">
+									<a href={m.href} class="hover:underline">{m.name}</a>
+								</h3>
+								<p class="mt-1 leading-relaxed text-muted">{m.objective.replaceAll('`', '')}</p>
+								<p class="mt-1 text-sm font-bold text-heading">{m.status}</p>
+							</div>
+						</li>
+					);
+				})}
+			</ol>
+		</div>
+	</section>
+
+	<section class="shell grid items-center gap-10 py-20 md:grid-cols-[auto_1fr] md:gap-16 lg:py-28" aria-labelledby="read">
+		<div class="mx-auto rounded-[3rem] dark:bg-white dark:p-4">
+			<Image src={logo} alt="Pyn logo: a snake coiled around the letter P" widths={[240, 480]} sizes="(min-width: 768px) 17rem, 14rem" width={480} class="size-56 md:size-68" />
+		</div>
+		<div>
+			<h2 id="read" class="text-3xl font-extrabold tracking-[-0.025em] text-heading sm:text-5xl">The whole plan is in the open.</h2>
+			<p class="mt-5 max-w-xl text-lg leading-relaxed text-muted">Research, architecture, decision records, behavior specifications and the full backlog, including what is still undecided.</p>
+			<ul class="mt-8 flex flex-wrap gap-x-8 gap-y-3 font-bold text-link">
+				<li><a class="underline" href="/docs/research/competitive-analysis/">Competitive analysis</a></li>
+				<li><a class="underline" href="/docs/architecture/overview/">Architecture</a></li>
+				<li><a class="underline" href="/docs/adr/">Decisions</a></li>
+				<li><a class="underline" href="/docs/issues/">Backlog</a></li>
+			</ul>
+		</div>
+	</section>
+</Base>

@@ -1,0 +1,37 @@
+---
+import { ChevronRight } from '@lucide/astro';
+import type { Group } from '../lib/docs';
+import Icon from './Icon.astro';
+
+interface Props {
+	groups: Group[];
+	current: string;
+}
+const { groups, current } = Astro.props;
+---
+
+<ul class="grid gap-1 text-sm">
+	{groups.map((group) => {
+		const open = group.name === 'Plan' || group.pages.some((p) => p.href === current);
+		return (
+			<li>
+				<details open={open} class="group/nav">
+					<summary class="flex cursor-pointer list-none items-center gap-2.5 rounded-lg px-2 py-2 font-bold text-heading hover:bg-surface [&::-webkit-details-marker]:hidden">
+						<Icon name={group.icon} class="size-4 text-teal-800 dark:text-teal-300" />
+						{group.name}
+						<ChevronRight class="ml-auto size-4 text-muted transition-transform group-open/nav:rotate-90" aria-hidden="true" />
+					</summary>
+					<ul class="mt-1 mb-2 ml-4 grid gap-0.5 border-l border-line pl-2">
+						{group.pages.map((page) => (
+							<li>
+								<a href={page.href} aria-current={page.href === current ? 'page' : undefined} class="block rounded-lg px-3 py-1.5 leading-snug text-muted hover:bg-surface hover:text-heading aria-[current=page]:bg-indigo-800 aria-[current=page]:font-bold aria-[current=page]:text-white">
+									{page.title}
+								</a>
+							</li>
+						))}
+					</ul>
+				</details>
+			</li>
+		);
+	})}
+</ul>

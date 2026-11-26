@@ -1,0 +1,100 @@
+---
+import '@fontsource-variable/manrope';
+import '../styles/global.css';
+import { ArrowUpRight } from '@lucide/astro';
+import { Image } from 'astro:assets';
+import logo from '../assets/pyn-logo.png';
+import { REPO_URL, SITE_REPO_URL } from '../lib/paths.mjs';
+
+interface Props {
+	title: string;
+	description: string;
+}
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const path = Astro.url.pathname;
+const nav = [
+	{ label: 'Overview', href: '/docs/product/executive-summary/' },
+	{ label: 'Roadmap', href: '/docs/roadmap/' },
+	{ label: 'Docs', href: '/docs/' },
+];
+const contract = `<!--
+THESIS: Pyn is presented through its one promise, a check that never passes what did not run; no hero metrics or feature-card grid.
+OWN-WORLD: Logo indigo fields, teal signal color, white ground; capsule bars taken from the logo's speed lines; Manrope; Lucide strokes.
+STORY: A Python developer sees the planned behavior, learns what is delegated, sees the roadmap, and knows nothing is built yet.
+FIRST VIEWPORT: Large headline and two quiet actions left; operable pyn check report on an indigo panel right.
+FORM: Precisely specified brief, shaped directly; no concept roll, no seed key.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance
+-->`;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+		<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<meta name="theme-color" content="#140c63" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={new URL('/og.png', Astro.site)} />
+		<meta name="twitter:card" content="summary_large_image" />
+	</head>
+	<body class="flex min-h-dvh flex-col antialiased">
+		<Fragment set:html={contract} />
+		<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-indigo-900 focus:px-4 focus:py-2 focus:font-bold focus:text-white">
+			Skip to content
+		</a>
+		<header class="sticky top-0 z-40 border-b border-line bg-surface">
+			<div class="shell flex h-16 items-center justify-between gap-4">
+				<a href="/" class="flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-heading">
+					<span class="grid size-10 place-items-center rounded-xl dark:bg-white">
+						<Image src={logo} alt="" width={80} height={80} class="size-9" loading="eager" />
+					</span>
+					Pyn
+				</a>
+				<nav aria-label="Main" class="flex items-center gap-1 text-sm font-semibold sm:gap-2">
+					{nav.map((item) => (
+						<a
+							href={item.href}
+							aria-current={path === item.href ? 'page' : undefined}
+							class:list={[
+								'rounded-full px-3 py-2 text-muted hover:bg-ground hover:text-heading aria-[current=page]:bg-ground aria-[current=page]:text-heading',
+								item.label === 'Overview' && 'max-sm:hidden',
+							]}
+						>
+							{item.label}
+						</a>
+					))}
+					<a href={REPO_URL} class="inline-flex items-center gap-1 rounded-full px-3 py-2 text-muted hover:bg-ground hover:text-heading">
+						GitHub <ArrowUpRight class="size-4" aria-hidden="true" />
+					</a>
+				</nav>
+			</div>
+		</header>
+		<main id="main" class="flex-1"><slot /></main>
+		<footer class="bg-indigo-950 py-12 text-indigo-200">
+			<div class="shell flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+				<div class="max-w-md">
+					<p class="text-lg font-extrabold text-white">Pyn</p>
+					<p class="mt-2 text-sm leading-relaxed">
+						A planned Python toolkit. There is no release yet, the name is a working name, and no license has been chosen.
+					</p>
+				</div>
+				<ul class="grid grid-cols-2 gap-x-12 gap-y-3 text-sm font-semibold">
+					<li><a class="hover:text-white hover:underline" href="/docs/">Documentation</a></li>
+					<li><a class="hover:text-white hover:underline" href="/docs/roadmap/">Roadmap</a></li>
+					<li><a class="hover:text-white hover:underline" href={REPO_URL}>Project repository</a></li>
+					<li><a class="hover:text-white hover:underline" href={SITE_REPO_URL}>Website source</a></li>
+				</ul>
+			</div>
+		</footer>
+	</body>
+</html>

@@ -1,0 +1,100 @@
+---
+import { ArrowLeft, ArrowRight, Menu, PencilLine } from '@lucide/astro';
+import Sidebar from '../components/Sidebar.astro';
+import { navigation } from '../lib/docs';
+import { REPO_URL } from '../lib/paths.mjs';
+import Base from './Base.astro';
+
+interface Props {
+	title: string;
+	source: string;
+	headings?: { depth: number; slug: string; text: string }[];
+}
+const { title, source, headings = [] } = Astro.props;
+const groups = await navigation();
+const current = Astro.url.pathname;
+const pages = groups.flatMap((g) => g.pages);
+const at = pages.findIndex((p) => p.href === current);
+const previous = at > 0 ? pages[at - 1] : undefined;
+const next = at >= 0 ? pages[at + 1] : undefined;
+const toc = headings.filter((h) => h.depth === 2);
+---
+
+<Base title={`${title} · Pyn docs`} description={`${title}. Planning documentation for Pyn, a Python toolkit that is not yet released.`}>
+	<div class="shell grid max-w-[90rem] grid-cols-[minmax(0,1fr)] gap-x-10 py-6 lg:grid-cols-[16rem_minmax(0,1fr)] lg:py-10 xl:grid-cols-[16rem_minmax(0,1fr)_13rem]">
+		<details class="mb-6 rounded-2xl border border-line bg-surface lg:hidden">
+			<summary class="flex cursor-pointer list-none items-center gap-2.5 px-4 py-3 font-bold text-heading">
+				<Menu class="size-5" aria-hidden="true" /> Browse documentation
+			</summary>
+			<nav aria-label="Documentation (mobile)" class="max-h-[70dvh] overflow-y-auto border-t border-line bg-ground p-3">
+				<Sidebar groups={groups} current={current} />
+			</nav>
+		</details>
+		<nav aria-label="Documentation" class="sticky top-24 hidden max-h-[calc(100dvh-7rem)] self-start overflow-y-auto pr-1 pb-8 lg:block">
+			<Sidebar groups={groups} current={current} />
+		</nav>
+		<div class="min-w-0">
+			<article class="doc prose max-w-[48rem] prose-headings:font-extrabold"><slot /></article>
+			<p class="mt-12">
+				<a href={`${REPO_URL}/blob/main/docs/${source}`} class="inline-flex items-center gap-2 text-sm font-bold text-link hover:underline">
+					<PencilLine class="size-4" aria-hidden="true" /> View source on GitHub
+				</a>
+			</p>
+			<nav aria-label="Previous and next page" class="mt-6 flex max-w-[48rem] flex-wrap justify-between gap-4 border-t border-line pt-6 text-sm">
+				{previous ? (
+					<a href={previous.href} class="inline-flex items-center gap-2 font-bold text-heading hover:underline"><ArrowLeft class="size-4 shrink-0" aria-hidden="true" /> {previous.title}</a>
+				) : <span />}
+				{next && (
+					<a href={next.href} class="ml-auto inline-flex items-center gap-2 text-right font-bold text-heading hover:underline">{next.title} <ArrowRight class="size-4 shrink-0" aria-hidden="true" /></a>
+				)}
+			</nav>
+		</div>
+		{toc.length > 1 && (
+			<nav aria-labelledby="toc" class="sticky top-24 hidden max-h-[calc(100dvh-7rem)] self-start overflow-y-auto text-sm xl:block">
+				<p id="toc" class="font-bold text-heading">On this page</p>
+				<ul class="mt-3 grid gap-2">
+					{toc.map((h) => (<li><a href={`#${h.slug}`} class="block leading-snug text-muted hover:text-heading hover:underline">{h.text}</a></li>))}
+				</ul>
+			</nav>
+		)}
+	</div>
+</Base>
+
+<script>
+	// Mermaid is large, so it is loaded only on pages that contain a diagram.
+	const blocks = document.querySelectorAll<HTMLElement>('pre > code.language-mermaid');
+	if (blocks.length) {
+		const { default: mermaid } = await import('mermaid');
+		await document.fonts.ready;
+		mermaid.initialize({
+			startOnLoad: false,
+			securityLevel: 'strict',
+			theme: 'base',
+			themeVariables: {
+				fontFamily: "'Manrope Variable', sans-serif",
+				primaryColor: '#e6e5fa',
+				primaryTextColor: '#14123a',
+				primaryBorderColor: '#2b1fb0',
+				lineColor: '#2b1fb0',
+				secondaryColor: '#d6fbf6',
+				tertiaryColor: '#f5f6fd',
+			},
+		});
+		for (const [index, code] of blocks.entries()) {
+			try {
+				const { svg } = await mermaid.render(`diagram-${index}`, code.textContent ?? '');
+				const figure = document.createElement('div');
+				figure.className = 'mermaid-figure not-prose';
+				figure.tabIndex = 0;
+				figure.innerHTML = svg;
+				// Keep labels legible on narrow screens; the figure scrolls instead.
+				const drawing = figure.querySelector('svg');
+				if (drawing) drawing.style.minWidth = `${Math.min(parseFloat(drawing.style.maxWidth) || 560, 560)}px`;
+				code.parentElement?.replaceWith(figure);
+			} catch (error) {
+				// The diagram source stays visible as a fallback.
+				console.error('Diagram failed to render', index, error);
+			}
+		}
+	}
+</script>

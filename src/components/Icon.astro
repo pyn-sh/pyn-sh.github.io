@@ -1,0 +1,24 @@
+---
+import { Blocks, Compass, FileText, Flag, FlaskConical, ListChecks, Map, Scale, Search, Shield } from '@lucide/astro';
+
+const icons = {
+	blocks: Blocks,
+	compass: Compass,
+	'file-text': FileText,
+	flag: Flag,
+	'flask-conical': FlaskConical,
+	'list-checks': ListChecks,
+	map: Map,
+	scale: Scale,
+	search: Search,
+	shield: Shield,
+};
+interface Props {
+	name: string;
+	class?: string;
+}
+const { name, class: className } = Astro.props;
+const Svg = icons[name as keyof typeof icons] ?? FileText;
+---
+
+<Svg class={className} aria-hidden="true" />
