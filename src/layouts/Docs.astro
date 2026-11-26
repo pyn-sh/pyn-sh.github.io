@@ -36,7 +36,7 @@ const toc = headings.filter((h) => h.depth === 2);
 		<div class="min-w-0">
 			<article class="doc prose max-w-[48rem] prose-headings:font-extrabold"><slot /></article>
 			<p class="mt-12">
-				<a href={`${REPO_URL}/blob/main/docs/${source}`} class="inline-flex items-center gap-2 text-sm font-bold text-link hover:underline">
+				<a href={`${REPO_URL}/blob/main/docs/${source}`} class="inline-flex items-center gap-2 text-sm font-bold text-brand hover:underline">
 					<PencilLine class="size-4" aria-hidden="true" /> View source on GitHub
 				</a>
 			</p>
@@ -72,12 +72,12 @@ const toc = headings.filter((h) => h.depth === 2);
 			theme: 'base',
 			themeVariables: {
 				fontFamily: "'Manrope Variable', sans-serif",
-				primaryColor: '#e6e5fa',
-				primaryTextColor: '#14123a',
-				primaryBorderColor: '#2b1fb0',
-				lineColor: '#2b1fb0',
-				secondaryColor: '#d6fbf6',
-				tertiaryColor: '#f5f6fd',
+				primaryColor: '#eeecff',
+				primaryTextColor: '#211f4d',
+				primaryBorderColor: '#6a5ae0',
+				lineColor: '#5b52b8',
+				secondaryColor: '#dcf8f1',
+				tertiaryColor: '#fafaff',
 			},
 		});
 		for (const [index, code] of blocks.entries()) {

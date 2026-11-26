@@ -9,7 +9,7 @@ export default defineConfig({
 	markdown: {
 		processor: unified({ rehypePlugins: [rehypeDocs] }),
 		syntaxHighlight: { type: 'shiki', excludeLangs: ['mermaid', 'math'] },
-		shikiConfig: { themes: { light: 'github-light-high-contrast', dark: 'github-dark' } },
+		shikiConfig: { theme: 'github-light-high-contrast' },
 	},
 	vite: { plugins: [tailwindcss()] },
 });

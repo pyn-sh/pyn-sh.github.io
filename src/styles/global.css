@@ -1,69 +1,56 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
-/* Colors are sampled from the logo: deep indigo, bright teal, white. */
+/* Light palette grown from the logo: indigo leads, teal signals, soft washes carry the sections. */
 @theme {
 	--font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
-	--color-indigo-950: #0d0942;
-	--color-indigo-900: #140c63;
-	--color-indigo-800: #1c118a;
-	--color-indigo-700: #2b1fb0;
-	--color-indigo-200: #c9c6f2;
-	--color-indigo-100: #e6e5fa;
-	--color-teal-300: #1be6d6;
-	--color-teal-500: #04d0b8;
-	--color-teal-800: #056458;
+
+	--color-ground: oklch(0.985 0.007 285);
+	--color-surface: oklch(1 0 0);
+	--color-line: oklch(0.915 0.022 285);
+	--color-ink: oklch(0.29 0.06 280);
+	--color-muted: oklch(0.47 0.05 280);
+	--color-heading: oklch(0.27 0.13 275);
+
+	--color-brand: oklch(0.5 0.22 277);
+	--color-brand-strong: oklch(0.43 0.21 276);
+	--color-lilac: oklch(0.955 0.027 290);
+	--color-lilac-deep: oklch(0.9 0.06 288);
+
+	--color-mint: oklch(0.96 0.04 180);
+	--color-signal: oklch(0.83 0.14 180);
+	--color-signal-ink: oklch(0.47 0.088 188);
+
+	/* Soft fills with matching dark text: statuses and command areas. */
+	--color-pass: oklch(0.925 0.085 175);
+	--color-pass-ink: oklch(0.37 0.075 180);
+	--color-fail: oklch(0.925 0.047 15);
+	--color-fail-ink: oklch(0.43 0.15 18);
+	--color-warn: oklch(0.935 0.085 85);
+	--color-warn-ink: oklch(0.42 0.088 65);
+	--color-skip: oklch(0.925 0.04 285);
+	--color-skip-ink: oklch(0.39 0.11 280);
+	--color-sky: oklch(0.93 0.05 235);
+	--color-sky-ink: oklch(0.4 0.09 245);
+
 	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root {
-	color-scheme: light dark;
-	--ground: #f5f6fd;
-	--surface: #ffffff;
-	--ink: #14123a;
-	--muted: #4b4a6b;
-	--line: #dcdcf0;
-	--heading: #140c63;
-	--link: #2b1fb0;
-	--panel: #140c63;
-	--field: #1c118a;
-}
-@media (prefers-color-scheme: dark) {
-	:root {
-		--ground: #09071f;
-		--surface: #121036;
-		--ink: #e7e6f7;
-		--muted: #b3b1d4;
-		--line: #2c2961;
-		--heading: #ffffff;
-		--link: #5ff0e3;
-		--panel: #171150;
-		--field: #140c63;
-	}
-}
-@theme inline {
-	--color-ground: var(--ground);
-	--color-surface: var(--surface);
-	--color-ink: var(--ink);
-	--color-muted: var(--muted);
-	--color-line: var(--line);
-	--color-heading: var(--heading);
-	--color-link: var(--link);
-	--color-panel: var(--panel);
-	--color-field: var(--field);
+	color-scheme: light;
 }
 
 @layer base {
 	html {
 		scroll-behavior: smooth;
-		scrollbar-color: var(--color-indigo-700) var(--ground);
+		scrollbar-color: var(--color-lilac-deep) var(--color-ground);
 		-webkit-text-size-adjust: 100%;
 	}
 	body {
-		background: var(--ground);
-		color: var(--ink);
+		background: var(--color-ground);
+		color: var(--color-ink);
 		font-family: var(--font-sans);
-		caret-color: var(--color-teal-500);
+		caret-color: var(--color-brand);
 	}
 	h1,
 	h2,
@@ -77,11 +64,11 @@
 		text-underline-offset: 0.2em;
 	}
 	::selection {
-		background: var(--color-teal-300);
-		color: var(--color-indigo-950);
+		background: var(--color-signal);
+		color: var(--color-heading);
 	}
 	:focus-visible {
-		outline: 3px solid var(--color-teal-500);
+		outline: 3px solid var(--color-brand);
 		outline-offset: 3px;
 		border-radius: 4px;
 	}
@@ -96,6 +83,14 @@
 			transition: none !important;
 		}
 	}
+}
+
+/* Soft washes behind the opening and closing sections. */
+@utility wash {
+	background:
+		radial-gradient(60rem 32rem at 88% -10%, color-mix(in oklab, var(--color-signal) 24%, transparent), transparent 70%),
+		radial-gradient(52rem 34rem at -8% 8%, color-mix(in oklab, var(--color-brand) 13%, transparent), transparent 70%),
+		var(--color-ground);
 }
 
 @utility shell {
@@ -124,18 +119,18 @@
 
 /* Documents */
 .doc {
-	--tw-prose-body: var(--ink);
-	--tw-prose-headings: var(--heading);
-	--tw-prose-links: var(--link);
-	--tw-prose-bold: var(--heading);
-	--tw-prose-counters: var(--muted);
-	--tw-prose-bullets: var(--color-teal-500);
-	--tw-prose-hr: var(--line);
-	--tw-prose-quotes: var(--ink);
-	--tw-prose-quote-borders: var(--line);
-	--tw-prose-code: var(--heading);
-	--tw-prose-th-borders: var(--line);
-	--tw-prose-td-borders: var(--line);
+	--tw-prose-body: var(--color-ink);
+	--tw-prose-headings: var(--color-heading);
+	--tw-prose-links: var(--color-brand);
+	--tw-prose-bold: var(--color-heading);
+	--tw-prose-counters: var(--color-muted);
+	--tw-prose-bullets: var(--color-signal-ink);
+	--tw-prose-hr: var(--color-line);
+	--tw-prose-quotes: var(--color-ink);
+	--tw-prose-quote-borders: var(--color-line);
+	--tw-prose-code: var(--color-heading);
+	--tw-prose-th-borders: var(--color-line);
+	--tw-prose-td-borders: var(--color-line);
 	overflow-wrap: break-word;
 }
 .doc h1 {
@@ -146,7 +141,7 @@
 	scroll-margin-top: 6rem;
 }
 .doc :not(pre) > code {
-	background: color-mix(in srgb, var(--color-indigo-700) 12%, transparent);
+	background: color-mix(in srgb, var(--color-brand) 10%, transparent);
 	border-radius: 0.375rem;
 	padding: 0.1em 0.35em;
 	font-weight: 500;
@@ -156,19 +151,12 @@
 	content: none;
 }
 .doc pre {
-	border: 1px solid var(--line);
+	border: 1px solid var(--color-line);
 	border-radius: 0.875rem;
 	font-size: 0.85rem;
 }
 .doc .astro-code {
-	background-color: var(--surface) !important;
-}
-@media (prefers-color-scheme: dark) {
-	.doc .astro-code,
-	.doc .astro-code span {
-		color: var(--shiki-dark) !important;
-		background-color: var(--surface) !important;
-	}
+	background-color: var(--color-surface) !important;
 }
 .table-scroll {
 	overflow-x: auto;
@@ -192,14 +180,14 @@
 }
 .doc .task-list-item input {
 	margin-right: 0.6rem;
-	accent-color: var(--color-teal-500);
+	accent-color: var(--color-signal-ink);
 }
 .mermaid-figure {
 	overflow-x: auto;
 	margin-block: 1.5em;
 	padding: 1.25rem;
-	background: #fff;
-	border: 1px solid var(--line);
+	background: var(--color-surface);
+	border: 1px solid var(--color-line);
 	border-radius: 0.875rem;
 }
 .mermaid-figure svg {

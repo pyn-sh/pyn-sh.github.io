@@ -8,7 +8,7 @@ const nodes = [
 
 <svg viewBox="0 0 440 260" class="h-auto w-full" role="img" aria-labelledby="graph-title">
 	<title id="graph-title">Task graph: format check, lint and test run in parallel, then ci completes.</title>
-	<g fill="none" stroke="#1be6d6" stroke-width="3" stroke-linecap="round">
+	<g fill="none" class="stroke-signal-ink" stroke-width="3" stroke-linecap="round">
 		<path d="M176 40 C250 40 240 130 308 130" />
 		<path d="M176 130 H308" />
 		<path d="M176 220 C250 220 240 130 308 130" />
@@ -17,11 +17,11 @@ const nodes = [
 	<g font-size="17" font-weight="700" text-anchor="middle">
 		{nodes.map((n) => (
 			<g>
-				<rect x="4" y={n.y} width="172" height="40" rx="20" fill="#fff" />
-				<text x="90" y={n.y + 26} fill="#140c63">{n.name}</text>
+				<rect x="4" y={n.y} width="172" height="40" rx="20" class="fill-surface stroke-lilac-deep" stroke-width="2" />
+				<text x="90" y={n.y + 26} class="fill-heading">{n.name}</text>
 			</g>
 		))}
-		<rect x="316" y="104" width="120" height="52" rx="26" fill="#1be6d6" />
-		<text x="376" y="137" fill="#0d0942" font-size="20">ci</text>
+		<rect x="316" y="104" width="120" height="52" rx="26" class="fill-brand" />
+		<text x="376" y="137" class="fill-surface" font-size="20">ci</text>
 	</g>
 </svg>

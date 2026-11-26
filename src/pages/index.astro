@@ -23,6 +23,16 @@ const routes = [
 	['type checking', 'Studied first, built only if the study supports it', 'Quality', 'M10'],
 ];
 
+// One hue per area, so related commands read as a group.
+const areaTone: Record<string, string> = {
+	Execution: 'bg-sky text-sky-ink',
+	Python: 'bg-warn text-warn-ink',
+	Packages: 'bg-skip text-skip-ink',
+	Tasks: 'bg-pass text-pass-ink',
+	Testing: 'bg-fail text-fail-ink',
+	Quality: 'bg-lilac-deep text-heading',
+};
+
 const promises = [
 	{ icon: FileLock, title: 'Other lock files stay untouched', text: 'In a project managed by uv, Poetry or PDM, Pyn runs inside your environment and never writes their lock file.' },
 	{ icon: EyeOff, title: 'Reading commands run no project code', text: 'Diagnosis, help and dry runs only read. A repository cannot execute anything by being inspected.' },
@@ -39,6 +49,7 @@ parallel = true`;
 ---
 
 <Base title="Pyn: one command surface for Python projects" description="Pyn is a planned Python toolkit written in Rust with its own engine for packages, environments, tasks, testing, formatting and linting. In planning, no release yet.">
+	<div class="wash">
 	<section class="shell grid items-center gap-12 py-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:py-20">
 		<div>
 			<h1 class="text-[clamp(2.5rem,4.6vw,4.1rem)] leading-[1.06] font-extrabold tracking-[-0.035em] text-heading">
@@ -48,24 +59,25 @@ parallel = true`;
 				Pyn is a planned Python toolkit, written in Rust with its own engine: packages, environments, tasks, tests, formatting and linting in one program that tells you the truth about what ran.
 			</p>
 			<div class="mt-9 flex flex-wrap gap-3">
-				<a href="/docs/product/executive-summary/" class="button bg-indigo-800 text-white hover:bg-indigo-700 dark:bg-teal-300 dark:text-indigo-950 dark:hover:bg-white">
+				<a href="/docs/product/executive-summary/" class="button bg-brand text-surface hover:bg-brand-strong">
 					Read the plan <ArrowRight class="size-5" aria-hidden="true" />
 				</a>
-				<a href={REPO_URL} class="button border-2 border-line text-heading hover:bg-surface">
+				<a href={REPO_URL} class="button border-2 border-lilac-deep bg-surface text-heading hover:bg-lilac">
 					View on GitHub <ArrowUpRight class="size-5" aria-hidden="true" />
 				</a>
 			</div>
 			<p class="mt-8 flex items-center gap-3 pl-2 text-sm font-semibold text-muted">
 				<span class="flex flex-col gap-1" aria-hidden="true">
-					<span class="h-1.5 w-7 rounded-full bg-indigo-800 dark:bg-indigo-200"></span>
-					<span class="-ml-2 h-1.5 w-9 rounded-full bg-teal-500"></span>
-					<span class="h-1.5 w-5 rounded-full bg-indigo-800 dark:bg-indigo-200"></span>
+					<span class="h-1.5 w-7 rounded-full bg-brand"></span>
+					<span class="-ml-2 h-1.5 w-9 rounded-full bg-signal"></span>
+					<span class="h-1.5 w-5 rounded-full bg-brand"></span>
 				</span>
 				In planning. There is nothing to install yet.
 			</p>
 		</div>
 		<CheckReport />
 	</section>
+	</div>
 
 	<section class="border-y border-line bg-surface py-20 lg:py-28" aria-labelledby="routes">
 		<div class="shell">
@@ -79,7 +91,7 @@ parallel = true`;
 						<code class="font-mono text-base font-bold text-heading">{command}</code>
 						<span class="text-muted">{does}</span>
 						<span>
-							<span class="inline-block rounded-full bg-indigo-100 px-3 py-1 text-sm font-bold text-indigo-900">{area}</span>
+							<span class:list={['inline-block rounded-full px-3 py-1 text-sm font-bold', areaTone[area]]}>{area}</span>
 						</span>
 						<span class="text-sm font-semibold text-muted tabular-nums md:text-right"><span class="md:sr-only">Planned for </span>{milestone}</span>
 					</li>
@@ -88,22 +100,22 @@ parallel = true`;
 		</div>
 	</section>
 
-	<section class="bg-field py-20 text-white lg:py-28" aria-labelledby="tasks">
+	<section class="bg-lilac py-20 lg:py-28" aria-labelledby="tasks">
 		<div class="shell grid gap-12 lg:grid-cols-2 lg:gap-16">
 			<div class="min-w-0">
-				<h2 id="tasks" class="text-3xl font-extrabold tracking-[-0.025em] sm:text-5xl">Your CI steps, declared once.</h2>
-				<p class="mt-5 max-w-xl text-lg leading-relaxed text-indigo-200">
-					Name tasks in <code class="font-mono text-base text-teal-300">pyproject.toml</code>. Dependencies run first, each one once, in parallel where you allow it.
+				<h2 id="tasks" class="text-3xl font-extrabold tracking-[-0.025em] text-heading sm:text-5xl">Your CI steps, declared once.</h2>
+				<p class="mt-5 max-w-xl text-lg leading-relaxed text-muted">
+					Name tasks in <code class="font-mono text-base font-bold text-brand">pyproject.toml</code>. Dependencies run first, each one once, in parallel where you allow it.
 				</p>
-				<div class="mt-8 overflow-hidden rounded-2xl text-sm [&_pre]:overflow-x-auto [&_pre]:p-5 [&_pre]:leading-relaxed">
-					<Code code={config} lang="toml" theme="github-dark" />
+				<div class="mt-8 overflow-hidden rounded-2xl border border-lilac-deep text-sm [&_pre]:overflow-x-auto [&_pre]:p-5 [&_pre]:leading-relaxed">
+					<Code code={config} lang="toml" theme="github-light-high-contrast" />
 				</div>
 			</div>
 			<div class="flex min-w-0 flex-col justify-center gap-10">
 				<TaskGraph />
-				<p class="text-indigo-200">
+				<p class="text-muted">
 					Planned for milestone M5, with built-in actions following in M6 and M7. Because Pyn owns packages, tests and checks, tasks can build on all of them.{' '}
-					<a href="/docs/architecture/task-engine/" class="font-bold text-teal-300 underline">Read the task engine design</a>.
+					<a href="/docs/architecture/task-engine/" class="font-bold text-brand underline">Read the task engine design</a>.
 				</p>
 			</div>
 		</div>
@@ -114,13 +126,13 @@ parallel = true`;
 		<dl class="mt-14 grid gap-x-16 gap-y-12 md:grid-cols-2">
 			{promises.map(({ icon: Mark, title, text }) => (
 				<div class="grid grid-cols-[auto_1fr] gap-x-5">
-					<Mark class="row-span-2 size-8 text-teal-800 dark:text-teal-300" stroke-width={1.75} aria-hidden="true" />
+					<Mark class="row-span-2 size-8 text-signal-ink" stroke-width={1.75} aria-hidden="true" />
 					<dt class="text-xl font-bold text-heading">{title}</dt>
 					<dd class="mt-2 max-w-md leading-relaxed text-muted">{text}</dd>
 				</div>
 			))}
 		</dl>
-		<p class="mt-12 text-muted">These are design requirements, each with a <a class="font-bold text-link underline" href="/docs/security/threat-model/">threat model entry</a> and tests still to be written.</p>
+		<p class="mt-12 text-muted">These are design requirements, each with a <a class="font-bold text-brand underline" href="/docs/security/threat-model/">threat model entry</a> and tests still to be written.</p>
 	</section>
 
 	<section class="border-y border-line bg-surface py-20 lg:py-28" aria-labelledby="roadmap">
@@ -128,7 +140,7 @@ parallel = true`;
 			<div class="lg:sticky lg:top-28 lg:self-start">
 				<h2 id="roadmap" class="text-3xl font-extrabold tracking-[-0.025em] text-heading sm:text-5xl">Where it stands</h2>
 				<p class="mt-5 leading-relaxed text-muted">Milestones are ordered by dependency and carry no dates. Four go or no-go gates decide whether work continues.</p>
-				<p class="mt-4 leading-relaxed text-muted">The biggest risk is scope: this is years of work, next to mature free tools. The plan says <a class="font-bold text-link underline" href="/docs/research/opportunity-analysis/#go--no-go">when to narrow it</a>.</p>
+				<p class="mt-4 leading-relaxed text-muted">The biggest risk is scope: this is years of work, next to mature free tools. The plan says <a class="font-bold text-brand underline" href="/docs/research/opportunity-analysis/#go--no-go">when to narrow it</a>.</p>
 				<a href="/docs/roadmap/" class="button mt-8 border-2 border-line text-heading hover:bg-ground">Full roadmap <ArrowRight class="size-5" aria-hidden="true" /></a>
 			</div>
 			<ol class="relative">
@@ -137,7 +149,7 @@ parallel = true`;
 					return (
 						<li class="group relative grid grid-cols-[3.5rem_1fr] gap-x-5 pb-8 last:pb-0">
 							<span class="absolute top-9 bottom-0 left-7 w-0.5 -translate-x-1/2 bg-line group-last:hidden" aria-hidden="true"></span>
-							<span class:list={['grid h-9 place-items-center rounded-full text-sm font-extrabold', active ? 'bg-teal-300 text-indigo-950' : 'border-2 border-line text-muted']}>{m.id}</span>
+							<span class:list={['grid h-9 place-items-center rounded-full text-sm font-extrabold', active ? 'bg-signal text-heading' : 'border-2 border-line text-muted']}>{m.id}</span>
 							<div>
 								<h3 class="text-xl font-bold text-heading">
 									<a href={m.href} class="hover:underline">{m.name}</a>
@@ -152,6 +164,7 @@ parallel = true`;
 		</div>
 	</section>
 
+	<div class="wash">
 	<section class="shell grid items-center gap-10 py-20 md:grid-cols-[auto_1fr] md:gap-16 lg:py-28" aria-labelledby="read">
 		<div class="mx-auto">
 			<Image src={logo} alt="Pyn logo: a snake coiled around the letter P" widths={[240, 480]} sizes="(min-width: 768px) 17rem, 14rem" width={480} class="size-56 md:size-68" />
@@ -159,7 +172,7 @@ parallel = true`;
 		<div>
 			<h2 id="read" class="text-3xl font-extrabold tracking-[-0.025em] text-heading sm:text-5xl">The whole plan is in the open.</h2>
 			<p class="mt-5 max-w-xl text-lg leading-relaxed text-muted">Research, architecture, decision records, behavior specifications and the full backlog, including what is still undecided.</p>
-			<ul class="mt-8 flex flex-wrap gap-x-8 gap-y-3 font-bold text-link">
+			<ul class="mt-8 flex flex-wrap gap-x-8 gap-y-3 font-bold text-brand">
 				<li><a class="underline" href="/docs/research/competitive-analysis/">Competitive analysis</a></li>
 				<li><a class="underline" href="/docs/architecture/overview/">Architecture</a></li>
 				<li><a class="underline" href="/docs/adr/">Decisions</a></li>
@@ -167,4 +180,5 @@ parallel = true`;
 			</ul>
 		</div>
 	</section>
+	</div>
 </Base>

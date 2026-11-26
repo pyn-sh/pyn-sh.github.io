@@ -13,5 +13,5 @@ const { feature } = Astro.props;
 <Docs title={feature.title} source={`specifications/features/${feature.slug}.feature`}>
 	<h1>{feature.title}</h1>
 	<p>Draft behavior specification. It has no step definitions yet, so it has never been executed.</p>
-	<Code code={feature.source} lang="gherkin" themes={{ light: 'github-light-high-contrast', dark: 'github-dark' }} />
+	<Code code={feature.source} lang="gherkin" theme="github-light-high-contrast" />
 </Docs>
