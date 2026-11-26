@@ -53,7 +53,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 			Skip to content
 		</a>
 		<header class="sticky top-0 z-40 border-b border-line bg-surface">
-			<div class="shell flex h-16 items-center justify-between gap-4">
+			<div class="shell flex h-16 items-center justify-between gap-2 sm:gap-4">
 				<a href="/" class="flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-heading">
 					<span class="grid size-10 place-items-center rounded-xl dark:bg-white">
 						<Image src={logo} alt="" width={80} height={80} class="size-9" loading="eager" />
@@ -66,15 +66,15 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 							href={item.href}
 							aria-current={path === item.href ? 'page' : undefined}
 							class:list={[
-								'rounded-full px-3 py-2 text-muted hover:bg-ground hover:text-heading aria-[current=page]:bg-ground aria-[current=page]:text-heading',
+								'rounded-full px-2 py-2 text-muted sm:px-3 hover:bg-ground hover:text-heading aria-[current=page]:bg-ground aria-[current=page]:text-heading',
 								item.label === 'Overview' && 'max-sm:hidden',
 							]}
 						>
 							{item.label}
 						</a>
 					))}
-					<a href={REPO_URL} class="inline-flex items-center gap-1 rounded-full px-3 py-2 text-muted hover:bg-ground hover:text-heading">
-						GitHub <ArrowUpRight class="size-4" aria-hidden="true" />
+					<a href={REPO_URL} class="inline-flex items-center gap-1 rounded-full px-2 py-2 text-muted sm:px-3 hover:bg-ground hover:text-heading">
+						GitHub <ArrowUpRight class="size-4 max-sm:hidden" aria-hidden="true" />
 					</a>
 				</nav>
 			</div>

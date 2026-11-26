@@ -1,13 +1,13 @@
 ---
 const nodes = [
-	{ name: 'lint', y: 20 },
-	{ name: 'typecheck', y: 110 },
-	{ name: 'test', y: 200 },
+	{ name: 'pyn:fmt-check', y: 20 },
+	{ name: 'pyn:lint', y: 110 },
+	{ name: 'pyn:test', y: 200 },
 ];
 ---
 
 <svg viewBox="0 0 440 260" class="h-auto w-full" role="img" aria-labelledby="graph-title">
-	<title id="graph-title">Task graph: lint, typecheck and test run in parallel, then ci completes.</title>
+	<title id="graph-title">Task graph: format check, lint and test run in parallel, then ci completes.</title>
 	<g fill="none" stroke="#1be6d6" stroke-width="3" stroke-linecap="round">
 		<path d="M176 40 C250 40 240 130 308 130" />
 		<path d="M176 130 H308" />

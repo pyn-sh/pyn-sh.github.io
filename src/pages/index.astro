@@ -12,41 +12,40 @@ import { REPO_URL } from '../lib/paths.mjs';
 const roadmap = await milestones();
 
 const routes = [
-	['pyn run', 'Run a script, file or tool in the project environment', 'Pyn + uv', 'M1–M2'],
-	['pyn add', 'Add dependencies to standard tables', 'uv', 'M2'],
-	['pyn install', 'Sync the environment without removing extra packages', 'uv', 'M2'],
-	['pyn doctor', 'Explain a broken setup without changing it', 'Pyn', 'M2'],
-	['pyn test', 'Run the tests and keep their exit code', 'pytest', 'M3'],
-	['pyn fmt, pyn lint', 'Format and lint with your configuration', 'Ruff', 'M3'],
-	['pyn check', 'One truthful result across every check', 'Pyn + Ruff, ty', 'M3'],
-	['pyn task', 'Run a task graph with parallel steps', 'Pyn', 'M4'],
+	['pyn run', 'Run a script, file or tool in the project environment', 'Execution', 'M1–M2'],
+	['pyn python', 'Find CPython, or download it and verify it', 'Python', 'M2'],
+	['pyn install', 'Install the locked packages with verified digests', 'Packages', 'M3'],
+	['pyn add', 'Resolve dependencies and write a standard lock file', 'Packages', 'M4'],
+	['pyn task', 'Run a task graph with parallel steps', 'Tasks', 'M5'],
+	['pyn test', 'Discover and run your tests', 'Testing', 'M6'],
+	['pyn check', 'One truthful result across every check', 'Quality', 'M6'],
+	['pyn fmt, pyn lint', 'Format and lint with Pyn’s own rules', 'Quality', 'M7'],
+	['type checking', 'Studied first, built only if the study supports it', 'Quality', 'M10'],
 ];
 
 const promises = [
-	{ icon: FileLock, title: 'Other lock files stay untouched', text: 'In a Poetry or PDM project, Pyn runs inside your environment and never writes the lock file.' },
+	{ icon: FileLock, title: 'Other lock files stay untouched', text: 'In a project managed by uv, Poetry or PDM, Pyn runs inside your environment and never writes their lock file.' },
 	{ icon: EyeOff, title: 'Reading commands run no project code', text: 'Diagnosis, help and dry runs only read. A repository cannot execute anything by being inspected.' },
 	{ icon: SquareTerminal, title: 'No hidden shell', text: 'Commands run as argument lists. Pipes and operators need a shell you name explicitly.' },
 	{ icon: ShieldCheck, title: 'No telemetry', text: 'Nothing is silently transmitted, and secrets are masked in messages Pyn writes.' },
 ];
 
 const config = `[tool.pyn.scripts]
-lint = "ruff check ."
-typecheck = "ty check"
-test = "pytest"
+dev = "uvicorn app:app --reload"
 
 [tool.pyn.tasks.ci]
-depends_on = ["lint", "typecheck", "test"]
+depends_on = ["pyn:fmt-check", "pyn:lint", "pyn:test"]
 parallel = true`;
 ---
 
-<Base title="Pyn: one command surface for Python projects" description="Pyn is a planned Rust toolkit that brings uv, Ruff, ty and pytest behind one consistent command line, with a truthful project check and a task graph. In planning, no release yet.">
+<Base title="Pyn: one command surface for Python projects" description="Pyn is a planned Python toolkit written in Rust with its own engine for packages, environments, tasks, testing, formatting and linting. In planning, no release yet.">
 	<section class="shell grid items-center gap-12 py-14 lg:grid-cols-[1.05fr_1fr] lg:gap-16 lg:py-20">
 		<div>
 			<h1 class="text-[clamp(2.5rem,4.6vw,4.1rem)] leading-[1.06] font-extrabold tracking-[-0.035em] text-heading">
 				One command surface for Python projects.
 			</h1>
 			<p class="mt-7 max-w-[34rem] text-lg leading-relaxed text-muted sm:text-xl">
-				Pyn is a planned toolkit, written in Rust, that puts uv, Ruff, ty and pytest behind one consistent interface, and tells you the truth about what ran.
+				Pyn is a planned Python toolkit, written in Rust with its own engine: packages, environments, tasks, tests, formatting and linting in one program that tells you the truth about what ran.
 			</p>
 			<div class="mt-9 flex flex-wrap gap-3">
 				<a href="/docs/product/executive-summary/" class="button bg-indigo-800 text-white hover:bg-indigo-700 dark:bg-teal-300 dark:text-indigo-950 dark:hover:bg-white">
@@ -71,16 +70,16 @@ parallel = true`;
 	<section class="border-y border-line bg-surface py-20 lg:py-28" aria-labelledby="routes">
 		<div class="shell">
 			<div class="max-w-2xl">
-				<h2 id="routes" class="text-3xl font-extrabold tracking-[-0.025em] text-heading sm:text-5xl">Proven tools do the work. Pyn connects them.</h2>
-				<p class="mt-5 text-lg leading-relaxed text-muted">Resolving, linting, type checking and testing are solved well already. Pyn builds the part between them.</p>
+				<h2 id="routes" class="text-3xl font-extrabold tracking-[-0.025em] text-heading sm:text-5xl">One tool, with its own engine.</h2>
+				<p class="mt-5 text-lg leading-relaxed text-muted">Pyn does the work itself, built on Rust libraries, and runs your code on standard CPython. It does not call other developer tools. It arrives in stages.</p>
 			</div>
 			<ul class="mt-12 border-t border-line">
-				{routes.map(([command, does, by, milestone]) => (
+				{routes.map(([command, does, area, milestone]) => (
 					<li class="grid items-baseline gap-x-6 gap-y-2 border-b border-line py-5 md:grid-cols-[13rem_1fr_11rem_4rem]">
 						<code class="font-mono text-base font-bold text-heading">{command}</code>
 						<span class="text-muted">{does}</span>
 						<span>
-							<span class:list={['inline-block rounded-full px-3 py-1 text-sm font-bold', by.startsWith('Pyn') ? 'bg-teal-300 text-indigo-950' : 'bg-indigo-100 text-indigo-900']}>{by}</span>
+							<span class="inline-block rounded-full bg-indigo-100 px-3 py-1 text-sm font-bold text-indigo-900">{area}</span>
 						</span>
 						<span class="text-sm font-semibold text-muted tabular-nums md:text-right"><span class="md:sr-only">Planned for </span>{milestone}</span>
 					</li>
@@ -103,7 +102,7 @@ parallel = true`;
 			<div class="flex min-w-0 flex-col justify-center gap-10">
 				<TaskGraph />
 				<p class="text-indigo-200">
-					Planned for milestone M4. Other task runners exist, so the design leans on what Pyn knows about a Python project.
+					Planned for milestone M5, with built-in actions following in M6 and M7. Because Pyn owns packages, tests and checks, tasks can build on all of them.{' '}
 					<a href="/docs/architecture/task-engine/" class="font-bold text-teal-300 underline">Read the task engine design</a>.
 				</p>
 			</div>
@@ -128,8 +127,8 @@ parallel = true`;
 		<div class="shell grid gap-12 lg:grid-cols-[1fr_1.6fr] lg:gap-20">
 			<div class="lg:sticky lg:top-28 lg:self-start">
 				<h2 id="roadmap" class="text-3xl font-extrabold tracking-[-0.025em] text-heading sm:text-5xl">Where it stands</h2>
-				<p class="mt-5 leading-relaxed text-muted">Milestones are ordered by dependency and carry no dates. Three go or no-go gates decide whether work continues.</p>
-				<p class="mt-4 leading-relaxed text-muted">The biggest risk is that uv ships its own task runner or combined check. The plan says <a class="font-bold text-link underline" href="/docs/research/opportunity-analysis/#go--no-go">what happens then</a>.</p>
+				<p class="mt-5 leading-relaxed text-muted">Milestones are ordered by dependency and carry no dates. Four go or no-go gates decide whether work continues.</p>
+				<p class="mt-4 leading-relaxed text-muted">The biggest risk is scope: this is years of work, next to mature free tools. The plan says <a class="font-bold text-link underline" href="/docs/research/opportunity-analysis/#go--no-go">when to narrow it</a>.</p>
 				<a href="/docs/roadmap/" class="button mt-8 border-2 border-line text-heading hover:bg-ground">Full roadmap <ArrowRight class="size-5" aria-hidden="true" /></a>
 			</div>
 			<ol class="relative">

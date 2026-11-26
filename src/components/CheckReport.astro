@@ -19,7 +19,7 @@ const scenarios: Scenario[] = [
 		rows: [
 			['format', 'passed', 'nothing to change'],
 			['lint', 'passed', 'no findings'],
-			['types', 'passed', 'no findings'],
+			['test', 'passed', 'all tests passed'],
 		],
 		exit: 0,
 		verdict: 'Every selected check ran and passed.',
@@ -30,20 +30,20 @@ const scenarios: Scenario[] = [
 		command: 'pyn check',
 		rows: [
 			['format', 'passed', 'nothing to change'],
-			['lint', 'failed', 'findings, shown unedited'],
-			['types', 'passed', 'no findings'],
+			['lint', 'failed', 'file, line and rule'],
+			['test', 'passed', 'all tests passed'],
 		],
 		exit: 1,
 		verdict: 'The other checks still run to completion.',
 	},
 	{
 		id: 'missing',
-		label: 'Tool missing',
+		label: 'Broken setup',
 		command: 'pyn check',
 		rows: [
 			['format', 'passed', 'nothing to change'],
 			['lint', 'passed', 'no findings'],
-			['types', 'unavailable', 'type checker not found'],
+			['test', 'unavailable', 'no environment'],
 		],
 		exit: 3,
 		verdict: 'A broken setup is not a pass, and not a code failure.',
@@ -51,10 +51,10 @@ const scenarios: Scenario[] = [
 	{
 		id: 'empty',
 		label: 'No tests',
-		command: 'pyn check lint tests',
+		command: 'pyn check lint test',
 		rows: [
 			['lint', 'passed', 'no findings'],
-			['tests', 'skipped', 'no tests collected'],
+			['test', 'skipped', 'no tests collected'],
 		],
 		exit: 1,
 		verdict: 'You asked for tests, so zero tests does not count.',

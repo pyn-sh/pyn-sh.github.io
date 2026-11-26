@@ -13,10 +13,10 @@ Astro, Tailwind CSS v4, Manrope, Lucide icons (chosen by the project owner). Sta
 Python developers who want to understand what Pyn plans to be, and people reading its planning documents.
 
 ## Product Purpose
-Present the Pyn project: a planned Rust command-line toolkit giving Python projects one command surface over uv, Ruff, ty and pytest, with a native task graph and a truthful aggregated check.
+Present the Pyn project: a planned Rust toolchain for Python with its own engine for packages, environments, tasks, testing, formatting, linting and, last, type checking, on standard CPython.
 
 ## Positioning
-Orchestration over existing tools. A check that did not run is never reported as passed.
+One independent tool with its own logic; it does not call other developer tools. A check that did not run is never reported as passed.
 
 ## Capabilities and Constraints
 - Planning only: no code, no release, nothing to install, no benchmarks.
